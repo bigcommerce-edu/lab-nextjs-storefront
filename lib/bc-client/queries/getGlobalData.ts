@@ -16,6 +16,12 @@ query GetSettings($logoSize: Int!) {
               }
           }
       }
+
+      categoryTree {
+        entityId
+        name
+        path
+      }
   }
 }
 `;
@@ -48,7 +54,9 @@ export type StoreSettings = {
 }
 
 export type NavCategory = {
-  
+  entityId: number,
+  name: string,
+  path: string,
 }
 
 export const getGlobalData: 
@@ -63,6 +71,7 @@ export const getGlobalData:
   );
 
   const settings = settingsResp.data.site.settings;
+  const navCategories = settingsResp.data.site.categoryTree;
 
   return {
     settings: {
@@ -70,6 +79,6 @@ export const getGlobalData:
       logoText: settings.logoV2.text ?? null,
       logoImageUrl: settings.logoV2.image?.url ?? null,
     },
-    navCategories: [],
+    navCategories,
   };
 }
