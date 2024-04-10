@@ -14,11 +14,14 @@ export const getServerSideProps = (async (context) => {
   const pathSegments = Array.isArray(pathParam) ? pathParam : [pathParam];
   const path = "/" + pathSegments.join("/");
 
+  const { req, res } = context;
+  const customer = getCurrentCustomer(req, res);
+
   const imgSize = 900;
 
   let product;
   try {
-    product = await getProduct(path, imgSize);
+    product = await getProduct(path, imgSize, customer?.entityId);
   } catch (err) {
     console.log(err);
     product = null;
