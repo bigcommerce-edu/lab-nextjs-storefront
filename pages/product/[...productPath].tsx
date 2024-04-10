@@ -70,6 +70,7 @@ export default function ProductPage(
             <label className="font-bold">Price:</label>
             <span> {currencyFormatter.format(product.prices.price.value)}</span>
           </div>
+          <AddToCart product={product} />
         </div>
       </div>
     </>
