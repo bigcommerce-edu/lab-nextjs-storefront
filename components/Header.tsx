@@ -5,7 +5,7 @@ import MiniCart from "./MiniCart";
 import AccountLinks from "./AccountLinks";
 
 const Header = () => {
-  const { settings } = useGlobalData();
+  const { settings, navCategories } = useGlobalData();
 
   const emptySettings = { logoImageUrl: null, logoText: null, storeName: null };
 
@@ -24,6 +24,17 @@ const Header = () => {
             )}
           </a>
         </h1>
+      </div>
+      <div>
+        {navCategories && (
+          <ul className="flex">
+            {navCategories.map(navItem => (
+              <li key={navItem.path} className="mx-2 relative">
+                <Link href={`/category${navItem.path}`}>{navItem.name}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </header>
   )
