@@ -19,6 +19,8 @@ export const getServerSideProps = (async (context) => {
 
   const mainImgSize = 500;
   const thumbnailSize = 500;
+
+  const { before, after } = context.query;
   
   let category;
   try {
@@ -28,6 +30,8 @@ export const getServerSideProps = (async (context) => {
       thumbnailSize,
       {
         limit: 12,
+        before: before ? String(before) : undefined,
+        after: after ? String(after) : undefined,
       }
     );
   } catch (err) {
@@ -55,6 +59,8 @@ export const getServerSideProps = (async (context) => {
 export default function CategoryPage(
   {category, mainImgSize, thumbnailSize}: {category: PagedCategory, mainImgSize: number, thumbnailSize: number}
 ) {
+  const { before, after } = category.page;
+
   return (
     <>
       <PageHeading>{category.name}</PageHeading>
@@ -82,6 +88,15 @@ export default function CategoryPage(
           </li>
         ))}
       </ul>
+
+      <div className="w-1/4 flex justify-around">
+          {before && (
+            <Link href={`/category${category.path}?before=${before}`}><ArrowLongLeft /></Link>
+          )}
+          {after && (
+            <Link href={`/category${category.path}?after=${after}`}><ArrowLongRight /></Link>
+          )}
+      </div>
     </>
   )
 }
