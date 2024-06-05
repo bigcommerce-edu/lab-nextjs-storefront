@@ -1,5 +1,6 @@
 import { GetServerSidePropsContext } from 'next';
 import { getGlobalData } from './bc-client/queries/getGlobalData';
+import getCurrentCustomer from './getCurrentCustomer';
 
 const getGlobalServerSideProps = (async ({ req, res }: GetServerSidePropsContext) => {
   let globalData;

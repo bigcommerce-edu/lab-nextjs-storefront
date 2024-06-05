@@ -1,14 +1,15 @@
 import Image from "next/image";
+import Link from "next/link";
 import { useGlobalData } from "@/context/globalData";
+import MiniCart from "./MiniCart";
+import AccountLinks from "./AccountLinks";
 
 const Header = () => {
   const { settings } = useGlobalData();
 
-  if (!settings) {
-    return '';
-  }
+  const emptySettings = { logoImageUrl: null, logoText: null, storeName: null };
 
-  const { logoImageUrl, logoText, storeName } = settings;
+  const { logoImageUrl, logoText, storeName } = settings ?? emptySettings;
 
   return (
     <header className="w-full p-4 border-b border-neutral-300">

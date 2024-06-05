@@ -35,7 +35,8 @@ type GetGlobalDataResp = {
             url: string,
           }
         }
-      }
+      },
+      categoryTree: NavCategory[]
     }
   }
 }
@@ -46,14 +47,19 @@ export type StoreSettings = {
   logoImageUrl: string | null,
 }
 
+export type NavCategory = {
+  
+}
+
 export const getGlobalData: 
-  () => Promise<{settings: StoreSettings}> 
-= async () => {
+  (customerId?: number) => Promise<{settings: StoreSettings, navCategories: NavCategory[]}> 
+= async (customerId) => {
   const settingsResp = await bcGqlFetch<GetGlobalDataResp, GetGlobalDataVars>(
     getGlobalDataQuery,
     {
       logoSize: 500,
     },
+    customerId
   );
 
   const settings = settingsResp.data.site.settings;
@@ -63,6 +69,7 @@ export const getGlobalData:
       storeName: settings.storeName ?? null,
       logoText: settings.logoV2.text ?? null,
       logoImageUrl: settings.logoV2.image?.url ?? null,
-    }
+    },
+    navCategories: [],
   };
 }
