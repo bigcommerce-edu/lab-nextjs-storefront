@@ -12,17 +12,15 @@ This storefront is built on Next.js 14.
 
 Install the _starter_ state.
 
-```
-pnpm create next-app@latest -e \
-  https://github.com/bigcommerce-edu/lab-nextjs-storefront/tree/starter \
-  /path/to/working/directory
+```shell
+pnpm create next-app@latest -e https://github.com/bigcommerce-edu/lab-nextjs-storefront/tree/starter /path/to/working/directory
 ```
 
 ### Next.js Install Reference
 
 Next.js was installed with the following command:
 
-```
+```shell
 pnpm create next-app@latest ./ --ts --tailwind \
   --no-eslint --no-app --no-src-dir \
   --import-alias '@/*'
@@ -49,10 +47,8 @@ pnpm create next-app@latest ./ --ts --tailwind \
 
 Fresh setup:
 
-```
-pnpm create next-app@latest -e \
-  https://github.com/bigcommerce-edu/lab-nextjs-storefront/tree/lab-cart-start \
-  /path/to/working/directory
+```shell
+pnpm create next-app@latest -e https://github.com/bigcommerce-edu/lab-nextjs-storefront/tree/lab-cart-start /path/to/working/directory
 ```
 
 [Completed lab state](https://github.com/bigcommerce-edu/lab-nextjs-storefront/tree/lab-cart-complete)
@@ -71,10 +67,8 @@ pnpm create next-app@latest -e \
 
 Fresh setup:
 
-```
-pnpm create next-app@latest -e \
-  https://github.com/bigcommerce-edu/lab-nextjs-storefront/tree/lab-cust-start \
-  /path/to/working/directory
+```shell
+pnpm create next-app@latest -e https://github.com/bigcommerce-edu/lab-nextjs-storefront/tree/lab-cust-start /path/to/working/directory
 ```
 
 [Completed lab state](https://github.com/bigcommerce-edu/lab-nextjs-storefront/tree/lab-cust-complete)
@@ -89,3 +83,11 @@ pnpm create next-app@latest -e \
 * [Step 6 diff](https://github.com/bigcommerce-edu/lab-nextjs-storefront/compare/lab-cust-05-03...lab-cust-06)
 
 [Full lab diff](https://github.com/bigcommerce-edu/lab-nextjs-storefront/compare/lab-cust-start...lab-cust-complete)
+
+### Finished State
+
+Set up with all features complete:
+
+```shell
+pnpm create next-app@latest -e https://github.com/bigcommerce-edu/lab-nextjs-storefront/tree/lab-cust-complete /path/to/working/directory
+```
