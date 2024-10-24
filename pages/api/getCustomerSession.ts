@@ -6,6 +6,7 @@ import getCurrentCustomer from '@/lib/getCurrentCustomer';
 
 type CustomerSessionResp = {
   cart: Cart | null,
+  loggedIn: boolean,
 }
 
 export default async function handler(
@@ -13,9 +14,12 @@ export default async function handler(
   res: NextApiResponse<CustomerSessionResp>
 ) {
   if (req.method !== "GET") {
-    res.status(404).json({ cart: null });
+    res.status(404).json({ cart: null, loggedIn: false });
     return;
   }
+
+  const customer = getCurrentCustomer(req, res);
+  const loggedIn = Boolean(customer?.entityId);
 
   let cart;
 
@@ -31,5 +35,5 @@ export default async function handler(
     cart = null;
   }
 
-  res.status(200).json({ cart });
+  res.status(200).json({ cart, loggedIn });
 }

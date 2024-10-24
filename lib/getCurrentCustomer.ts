@@ -8,7 +8,27 @@ const getCurrentCustomer: (
 ) => Customer | null = (
   req, res
 ) => {
-  return null;
+  const customerJwt = getCookie("customer", { req, res });
+  if (!customerJwt) {
+    return null;
+  }
+
+  const JWT_SECRET = process.env.JWT_SECRET ?? '';
+
+  let customerResult;
+  try {
+    const customerClaim = jwt.verify(customerJwt, JWT_SECRET);
+    const customer = JSON.parse(customerClaim.sub?.toString() ?? '');
+    customerResult = {
+      entityId: parseInt(customer.entityId ?? ''),
+      token: customer.token ?? '',
+    }
+  } catch (err) {
+    customerResult = null;
+    deleteCookie("customer", { req, res });
+  }
+
+  return customerResult;
 }
 
 export default getCurrentCustomer;
