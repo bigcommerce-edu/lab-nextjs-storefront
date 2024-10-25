@@ -1,4 +1,14 @@
+import { GetServerSideProps } from 'next';
 import PageHeading from "@/components/PageHeading";
+import getGlobalServerSideProps from '@/lib/getGlobalServerSideProps';
+
+export const getServerSideProps = (async (context) => {
+  return {
+    props: {
+      ... await getGlobalServerSideProps(context),
+    }
+  };
+}) satisfies GetServerSideProps;
 
 export default function Home() {
   return (
