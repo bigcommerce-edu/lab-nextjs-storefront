@@ -7,5 +7,17 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ status: string }>
 ) {
-  res.status(200).json({status: ''});
+  if (req.method !== "POST") {
+    res.status(404).json({status: "notfound"});
+    return;
+  }
+
+  const customer = getCurrentCustomer(req, res);
+  if (customer?.token) {
+    await logout();
+  }
+
+  deleteCookie("customer", { req, res });
+
+  res.status(200).json({status: "ok"});
 }
