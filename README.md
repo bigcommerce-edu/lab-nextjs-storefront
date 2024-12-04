@@ -4,7 +4,7 @@ This project supports guided lab exercises to create a basic implementation of a
 
 ## Prerequisites
 
-* Node.js 18.17 or later
+* Node.js 18.18 or later
 
 This storefront is built on Next.js 14.
 
