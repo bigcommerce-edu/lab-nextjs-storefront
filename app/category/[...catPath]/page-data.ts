@@ -32,6 +32,15 @@ fragment productFields on Product {
 }
 `;
 
+const pageFragment = `
+fragment pageFields on PageInfo {
+  hasNextPage
+  hasPreviousPage
+  startCursor
+  endCursor
+}
+`;
+
 const getCategoryWithBeforeQuery = `
 query GetCategory(
   $path: String!,
@@ -50,6 +59,9 @@ query GetCategory(
             last: $limit,
             before: $before
           ) {
+            pageInfo {
+              ... pageFields
+            }
             edges {
               node {
                 ... productFields
@@ -65,6 +77,8 @@ query GetCategory(
 ${categoryFragment}
 
 ${productFragment}
+
+${pageFragment}
 `;
 
 const getCategoryWithAfterQuery = `
@@ -85,6 +99,9 @@ query GetCategory(
             first: $limit,
             after: $after
           ) {
+            pageInfo {
+              ... pageFields
+            }
             edges {
               node {
                 ... productFields
@@ -100,6 +117,8 @@ query GetCategory(
 ${categoryFragment}
 
 ${productFragment}
+
+${pageFragment}
 `;
 
 interface GetCategoryWithProductsVars {
@@ -118,6 +137,12 @@ interface GetCategoryWithProductsResp {
         node: BasicCategory & {
           "__typename": string;
           products: {
+            pageInfo: {
+              hasNextPage: boolean;
+              hasPreviousPage: boolean;
+              startCursor: string | null;
+              endCursor: string | null;
+            }
             edges: {
               node: CategoryProduct;
             }[]
@@ -161,9 +186,16 @@ export const getCategoryWithProducts = cache(async ({
   }
 
   const products = (category.products?.edges ?? []).map(edge => edge.node);
+  const pageOpts = {
+    before: category.products.pageInfo.hasPreviousPage 
+      ? category.products.pageInfo.startCursor : null,
+    after: category.products.pageInfo.hasNextPage
+      ? category.products.pageInfo.endCursor : null,
+  };
 
   return {
     ...category,
     products,
+    page: pageOpts,
   };
 });

@@ -10,8 +10,10 @@ import { getCurrentCustomer } from "@/lib/getCurrentCustomer";
 
 export default async function CategoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ catPath: string[] }>,
+  searchParams?: Promise<{ before?: string, after?: string }>,
 }) {
   const { catPath } = await params;
   const path = `/${catPath.join('/')}`;
@@ -19,13 +21,19 @@ export default async function CategoryPage({
   const mainImgSize = 500;
   const thumbnailSize = 500;
 
+  const { before, after } = await searchParams ?? {};
+
   let category;
   try {
     category = await getCategoryWithProducts({
       path,
       mainImgSize,
       thumbnailSize,
-      page: { limit: 12 },
+      page: { 
+        limit: 12,
+        before: before ? String(before) : undefined,
+        after: after ? String(after) : undefined,
+      },
     });
   } catch(err) {
     console.log(err);
@@ -63,6 +71,25 @@ export default async function CategoryPage({
           </li>
         ))}
       </ul>
+
+      <div className="w-full flex justify-center">
+          {category.page.before && (
+            <Link
+              className="mx-4"
+              href={`/category${category.path}?before=${category.page.before}`}
+            >
+              <ArrowLongLeft />
+            </Link>
+          )}
+          {category.page.after && (
+            <Link
+              className="mx-4"
+              href={`/category${category.path}?after=${category.page.after}`}
+            >
+              <ArrowLongRight />
+            </Link>
+          )}
+      </div>
     </>
   );
 }
