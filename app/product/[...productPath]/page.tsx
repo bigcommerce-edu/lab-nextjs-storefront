@@ -15,11 +15,14 @@ export default async function ProductPage({
 
   const imgSize = 900;
 
+  const currentCustomer = await getCurrentCustomer();
+
   let product;
   try {
     product = await getProduct({
       path,
       imgSize,
+      customerToken: currentCustomer?.token,
     });
   } catch (err) {
     console.log(err);

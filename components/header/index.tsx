@@ -6,7 +6,11 @@ import AccountLinks from "../account-links";
 import { getCurrentCustomer } from "@/lib/getCurrentCustomer";
 
 const Header = async () => {
-  const { settings, navCategories } = await getHeaderSettings({});
+  const currentCustomer = await getCurrentCustomer();
+
+  const { settings, navCategories } = await getHeaderSettings({
+    customerToken: currentCustomer?.token,
+  });
 
   const emptySettings = { logoImageUrl: null, logoText: null, storeName: null };
   const { logoImageUrl, logoText, storeName } = settings ?? emptySettings;

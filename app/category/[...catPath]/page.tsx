@@ -23,6 +23,8 @@ export default async function CategoryPage({
 
   const { before, after } = await searchParams ?? {};
 
+  const currentCustomer = await getCurrentCustomer();
+
   let category;
   try {
     category = await getCategoryWithProducts({
@@ -34,6 +36,7 @@ export default async function CategoryPage({
         before: before ? String(before) : undefined,
         after: after ? String(after) : undefined,
       },
+      customerToken: currentCustomer?.token,
     });
   } catch(err) {
     console.log(err);
