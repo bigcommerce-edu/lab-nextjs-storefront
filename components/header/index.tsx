@@ -6,7 +6,7 @@ import AccountLinks from "../account-links";
 import { getCurrentCustomer } from "@/lib/getCurrentCustomer";
 
 const Header = async () => {
-  const { settings } = await getHeaderSettings({});
+  const { settings, navCategories } = await getHeaderSettings({});
 
   const emptySettings = { logoImageUrl: null, logoText: null, storeName: null };
   const { logoImageUrl, logoText, storeName } = settings ?? emptySettings;
@@ -24,6 +24,17 @@ const Header = async () => {
             )}
           </a>
         </h1>
+      </div>
+      <div>
+        {navCategories && (
+          <ul className="flex">
+            {navCategories.map(navItem => (
+              <li key={navItem.path} className="mx-2 relative">
+                <Link className="font-bold hover:underline" href={`/category${navItem.path}`}>{navItem.name}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </header>
   )

@@ -17,6 +17,11 @@ query GetSettings($logoSize: Int!) {
         }
       }
     }
+    categoryTree {
+      entityId
+      name
+      path
+    }
   }
 }
 `;
@@ -37,8 +42,15 @@ interface GetHeaderSettingsResp {
           }
         }
       }
+      categoryTree: NavCategory[]
     }
   }
+}
+
+interface NavCategory {
+  entityId: number;
+  name: string;
+  path: string;
 }
 
 /**
@@ -58,6 +70,7 @@ export const getHeaderSettings = cache(async ({
   );
 
   const settings = settingsResp.data.site.settings;
+  const navCategories = settingsResp.data.site.categoryTree;
 
   return {
     settings: {
@@ -65,5 +78,6 @@ export const getHeaderSettings = cache(async ({
       logoText: settings.logoV2.text ?? null,
       logoImageUrl: settings.logoV2.image?.url ?? null,
     },
+    navCategories,
   };
 });
