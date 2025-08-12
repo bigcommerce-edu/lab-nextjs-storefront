@@ -95,13 +95,59 @@ export const getCartDetails = async ({
   };
 };
 
+const createCartRedirectQuery = `
+mutation GetCartRedirectUrls(
+  $cartId: String!
+) {
+  cart {
+    createCartRedirectUrls(
+      input: {
+        cartEntityId: $cartId
+      }
+    ) {
+      redirectUrls {
+        redirectedCheckoutUrl
+      }
+    }
+  }
+}
+`;
+
+interface CreateCartRedirectVars {
+  cartId: string;
+}
+
+interface CreateCartRedirectResp {
+  data: {
+    cart: {
+      createCartRedirectUrls: {
+        redirectUrls: {
+          redirectedCheckoutUrl: string;
+        }
+      }
+    }
+  }
+}
+
 /**
  * Generate a redirect URL for a cart
  */
 export const createCartRedirect = async ({
-
+  cartId,
 }:{
-
+  cartId: string,
 }) => {
-  return Promise.resolve("");
+  const cartRedirectResp = await bcGqlFetch<CreateCartRedirectResp, CreateCartRedirectVars>(
+    createCartRedirectQuery,
+    {
+      cartId,
+    }
+  );
+
+  const url = cartRedirectResp.data.cart.createCartRedirectUrls.redirectUrls.redirectedCheckoutUrl;
+  if (!url) {
+    throw new Error("Creating cart redirect URL failed");
+  }
+
+  return url;
 };
