@@ -25,6 +25,7 @@ const Header = async () => {
           </a>
         </h1>
         <div className="flex">
+          <AccountLinks />
           <MiniCart />
         </div>
       </div>
