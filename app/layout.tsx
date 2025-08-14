@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, DM_Mono, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/header";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
             items-start content-start justify-center gap-4 text-neutral-950`
           }
         >
+          <Header />
           {children}
         </main>
       </body>
