@@ -20,9 +20,22 @@ fragment cartFields on Cart {
 `;
 
 export interface CartItem {
-
+  entityId: string;
+  productEntityId: number;
+  sku?: string;
+  name: string;
+  imageUrl?: string;
+  quantity: number;
+  salePrice: {
+    value: number;
+  };
+  extendedSalePrice: {
+    value: number;
+  };
 }
 
 export interface BasicCartDetails extends BasicCart {
-  
+  baseAmount: {
+    value: number
+  };
 }
