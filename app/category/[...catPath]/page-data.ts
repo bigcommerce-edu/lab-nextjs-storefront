@@ -37,6 +37,8 @@ fragment productFields on Product {
 //  - It should include fields on the PageInfo type
 //  - hasNextPage, hasPreviousPage, startCursor, and endCursor
 
+// TODO: Add `pageInfo` as a selection of `products`, using `pageFragment`
+//  - Make sure to add both the sub-selection and the fragment itself (at the end of the string)
 const getCategoryWithBeforeQuery = `
 query GetCategory(
   $path: String!,
@@ -72,6 +74,8 @@ ${categoryFragment}
 ${productFragment}
 `;
 
+// TODO: Add `pageInfo` as a selection of `products`, using `pageFragment`
+//  - Make sure to add both the sub-selection and the fragment itself (at the end of the string)
 const getCategoryWithAfterQuery = `
 query GetCategory(
   $path: String!,
@@ -123,6 +127,7 @@ interface GetCategoryWithProductsResp {
         node: BasicCategory & {
           "__typename": string;
           products: {
+            // TODO: Add the definition of `pageInfo`, matching the structure of the fragment
             edges: {
               node: CategoryProduct;
             }[]
@@ -166,9 +171,14 @@ export const getCategoryWithProducts = cache(async ({
   }
 
   const products = (category.products?.edges ?? []).map(edge => edge.node);
+  // TODO: Extract pageOpts from the response
+  //  - A single object with both `before` and `after` values
+  //  - `before` should depend on whether there is a startCursor
+  //  - `after` should depend on whether there is an endCursor
 
   return {
     ...category,
     products,
+    // TODO: Add a `page` object to the response, using `pageOpts`
   };
 });
