@@ -36,6 +36,8 @@ export default async function CategoryPage({
     category = null;
   }
 
+  // TODO: Replace this with a check for whether the category was found
+  //  - If no category was found, return notFound()
   console.log(category);
 
   return (
