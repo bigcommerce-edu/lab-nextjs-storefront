@@ -5,22 +5,35 @@ import { useState } from "react";
 import { addProductToCart } from "./_actions/add-product-to-cart";
 
 const AddToCart = ({
-  // TODO: Add product
+  product,
 }: {
-  // TODO: product is of the type `Product`
+  product: Product,
 }) => {
-  // TODO: Create a state value for `loading`
+  const [loading, setLoading] = useState(false);
 
-  // TODO: Create an onClick handler for the button
-  //  - Set loading to true before the cart action
-  //  - Call addProductToCart with the product's entityId
-  //  - Set loading to false after the cart action completes
+  const onClick = async () => {
+    setLoading(true);
+
+    const res = await addProductToCart({
+      productId: product.entityId,
+    });
+
+    setLoading(false);
+  }
 
   return (
     <div>
-      {/* TODO: Render the button */}
-      {/*  - Disable the button based on `loading` */}
-      {/*  - Use the onClick handler */}
+      <button disabled={loading} 
+        className="p-2 rounded-md text-lg w-44 cursor-pointer bg-neutral-700 text-white hover:bg-neutral-500 disabled:bg-neutral-500"
+        onClick={onClick}>
+          {loading ? (
+            <span>...</span>
+          ) : (
+            <span>
+              Add to Cart
+            </span>
+          )}
+        </button>
     </div>
   );
 };

@@ -49,11 +49,11 @@ import { cookies } from "next/headers";
  * Add item to new or existing cart
  */
 export const addProductToCart = async ({
-  // TODO: Add destructured parameters
-  //  - productId and quantity
-  //  - quantity defaults to 1
+  productId,
+  quantity=1,
 }: {
-  // TODO: Add type information for destructured parameters
+  productId: number,
+  quantity?: number,
 }) => {
   // TODO: Replace this with action logic
   //  - Use cookies() to get cartId cookie
