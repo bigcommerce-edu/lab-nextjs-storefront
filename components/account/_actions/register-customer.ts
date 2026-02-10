@@ -20,11 +20,17 @@ import { redirect } from "next/navigation";
  * Register a new customer
  */
 export const registerCustomer = async ({
-  // TODO: Add destructured parameters
-  //  - email, firstName, lastName, password
+  email,
+  firstName,
+  lastName,
+  password,
 }: {
-  // TODO: Add type information for destructured parameters
+  email: string,
+  firstName: string,
+  lastName: string,
+  password: string,
 }) => {
-  // TODO: Replace this with a response object indicating `success: false` with a "not implemented" error message
-  return Promise.resolve({});
+  return Promise.resolve(
+    { success: false, error: "Registration not implemented." }
+  );
 };
