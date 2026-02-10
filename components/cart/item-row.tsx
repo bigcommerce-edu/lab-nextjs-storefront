@@ -2,23 +2,43 @@ import { CartItem } from "@/types/cart";
 import Image from "next/image";
 
 const CartItemRow = ({
-  // TODO: Add destructured parameters
-  //  - item and currencyCode
+  item, 
+  currencyCode
 }: { 
-  // TODO: Add type information for destructured parameters
-  //  - item is a CartItem
+  item: CartItem, 
+  currencyCode: string,
 }) => {
-  // TODO: Define a static value for thumbnailSize
+  const thumbnailSize = 100;
 
-  // TODO: Create a currencyFormatter w/ Intl.NumberFormat
-  //  - Set currency based on currencyCode param
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currencyCode ?? 'USD',
+  });
 
   return (
-    <tr>
-      {/* TODO: Render the item row */}
-      {/*  - Render a <tr> */}
-      {/*  - Separate cells for item, quantity, and extendedSalePrice */}
-      {/*    - The item cell should render an image (with imageUrl), name, and sku */}
+    <tr className="border-t border-neutral-300">
+      <td className="w-1/2 p-8">
+        {item.imageUrl && (
+          <Image src={item.imageUrl} 
+            alt={item.name}
+            width={thumbnailSize} height={thumbnailSize / 2}
+            className="max-w-2xl max-w-full block" />
+        )}
+        <p className="font-bold">{item.name}</p>
+        {item.sku && (
+          <div className="text-sm">
+            <label className="font-bold">SKU:</label> {item.sku}
+          </div>
+        )}
+        <p>{currencyFormatter.format(item.salePrice.value)}</p>
+      </td>
+      <td className="p-8">
+        <label className="font-bold">Qty:</label>
+        <span> {item.quantity}</span>
+      </td>
+      <td className="p-8 text-right">
+        {currencyFormatter.format(item.extendedSalePrice.value)}
+      </td>
     </tr>
   );
 };

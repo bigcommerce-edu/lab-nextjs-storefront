@@ -18,20 +18,42 @@ export default async function CartPage() {
     cart = null;
   }
 
-  // TODO: Replace this with a check for whether the cart was found
-  //  - If no cart was found, render a simple page with a PageHeading and "no items in cart" message
-  console.log(cart);
+  if (!cart) {
+    return (
+      <>
+        <PageHeading>Cart</PageHeading>
+        <div className="w-1/2 text-center">There are no items in the cart.</div>
+      </>
+    )
+  }
 
-  // TODO: Create a currencyFormatter w/ Intl.NumberFormat
-  //  - Set currency based on cart.currencyCode
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: cart?.currencyCode ?? 'USD',
+  });
 
   return (
     <>
-      {/* TODO: Render the cart page */}
-      {/*  - Render a PageHeading with "Cart" */}
-      {/*  - Render a table with a tbody looping over cart.lineItems (use CartItemRow for each row) */}
-      {/*  - Render a tfoot with subtotal (cart.baseAmount.value) and grand total (cart.amount.value) */}
-      {/*  - Use currencyFormatter to format the amounts */}
+      <PageHeading>Cart</PageHeading>
+      <div className="w-full flex justify-center">
+        <table className="w-2/3">
+          <tbody>
+            {cart.lineItems.map(item => (
+              <CartItemRow key={item.entityId} item={item} currencyCode={cart.currencyCode} />
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <th className="px-8 py-4 text-right" colSpan={2}>Subtotal</th>
+              <td className="px-8 py-4 text-right">{currencyFormatter.format(cart.baseAmount.value)}</td>
+            </tr>
+            <tr>
+              <th className="px-8 py-4 text-right" colSpan={2}>Grand Total</th>
+              <td className="px-8 py-4 text-right">{currencyFormatter.format(cart.amount.value)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
     </>
   );
 }
