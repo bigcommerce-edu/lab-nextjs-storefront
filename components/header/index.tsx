@@ -6,10 +6,11 @@ import AccountLinks from "../account-links";
 import { getCurrentCustomer } from "@/lib/getCurrentCustomer";
 
 const Header = async () => {
-  // TODO: Use getCurrentCustomer to get the current customer from the session cookie
+  const currentCustomer = await getCurrentCustomer();
 
-  // TODO: Pass the customer token so the header settings query has customer context
-  const { settings, navCategories } = await getHeaderSettings({});
+  const { settings, navCategories } = await getHeaderSettings({
+    customerToken: currentCustomer?.token,
+  });
 
   const emptySettings = { logoImageUrl: null, logoText: null, storeName: null };
   const { logoImageUrl, logoText, storeName } = settings ?? emptySettings;
