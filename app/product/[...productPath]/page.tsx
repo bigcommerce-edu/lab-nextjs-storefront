@@ -57,7 +57,7 @@ export default async function ProductPage({
             <label className="font-bold">Price:</label>
             <span> {currencyFormatter.format(product.prices.price.value)}</span>
           </div>
-          {/* TODO: Render the AddToCart component, passing in the product */}
+          <AddToCart product={product} />
         </div>
       </div>
     </>
