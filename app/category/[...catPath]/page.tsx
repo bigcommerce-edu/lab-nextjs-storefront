@@ -9,24 +9,34 @@ import ArrowLongRight from "@/components/icons/arrow-long-right";
 import { getCurrentCustomer } from "@/lib/getCurrentCustomer";
 
 export default async function CategoryPage({
-  // TODO: Add params
+  params,
   // TODO: Add searchParams
 }: {
-  // TODO: The type of `params` is a Promise that returns `catPath` (the URL segments)
+  params: Promise<{ catPath: string[] }>,
   // TODO: The type of `searchParams` is a Promise that returns an object with `before` and `after` (both optional)
 }) {
-  // TODO: Get `catPath` from params and form a full path from all segments
+  const { catPath } = await params;
+  const path = `/${catPath.join('/')}`;
 
-  // TODO: Define static mainImgSize and thumbnailSize values
+  const mainImgSize = 500;
+  const thumbnailSize = 500;
 
   // TODO: Extract `before` and `after` from searchParams
 
-  // TODO: Fetch the category
-  //  - Use `getCategoryWithProducts` 
-  //  - Pass in path, mainImgSize, thumbnailSize, and page
-  //  - For page, pass a hard-coded limit of 12
+  let category;
+  try {
+    category = await getCategoryWithProducts({
+      path,
+      mainImgSize,
+      thumbnailSize,
+      page: { limit: 12 },
+    });
+  } catch(err) {
+    console.log(err);
+    category = null;
+  }
 
-  // TODO: Log the category response
+  console.log(category);
 
   return (
     <>
