@@ -1,16 +1,22 @@
 export interface BasicCart {
-  // TODO: Fill in fields, matching GraphQL schema
-  //  - Include entityId, currencyCode, amount
-  //  - amount is an object with a value
+  entityId: string;
+  currencyCode: string;
+  amount: {
+    value: number;
+  };
 }
 
-// TODO: Fill in the fragment, matching GraphQL schema
-//  - Fragment for type `Cart`
-//  - Include entityId, currencyCode, amount, lineItems
-//  - amount is an object with a value
-//  - lineItems is an object with a totalQuantity 
 export const CartFragment = `
-
+fragment cartFields on Cart {
+  entityId
+  currencyCode
+  amount {
+    value
+  }
+  lineItems {
+    totalQuantity
+  }
+}
 `;
 
 export interface CartItem {
