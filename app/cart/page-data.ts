@@ -95,31 +95,59 @@ export const getCartDetails = async ({
   };
 };
 
-// TODO: Add `createCartRedirectQuery`
-//  - This is a GraphQL mutation
-//  - It should use cart.createCartRedirectUrls
-//  - Needs a $cartId variable
-//  - Select redirectUrls.redirectedCheckoutUrl from cart
+const createCartRedirectQuery = `
+mutation GetCartRedirectUrls(
+  $cartId: String!
+) {
+  cart {
+    createCartRedirectUrls(
+      input: {
+        cartEntityId: $cartId
+      }
+    ) {
+      redirectUrls {
+        redirectedCheckoutUrl
+      }
+    }
+  }
+}
+`;
 
-// TODO: Define the `CreateCartRedirectVars` interface
-//  - This should match the expected variables for `createCartRedirectQuery`
+interface CreateCartRedirectVars {
+  cartId: string;
+}
 
-// TODO: Define the `CreateCartRedirectResp` interface
-//  - Matches the shape of `createCartRedirectQuery`
+interface CreateCartRedirectResp {
+  data: {
+    cart: {
+      createCartRedirectUrls: {
+        redirectUrls: {
+          redirectedCheckoutUrl: string;
+        }
+      }
+    }
+  }
+}
 
 /**
  * Generate a redirect URL for a cart
  */
 export const createCartRedirect = async ({
-  // TODO: Add cartId
+  cartId,
 }:{
-  // TODO: cartId is a string
+  cartId: string,
 }) => {
-  // TODO: Replace this with the actual mutation logic
-  //  - Use bcGqlFetch with the response and var types
-  //    - Pass createCartRedirectQuery as the query
-  //    - Include cartId
-  //  - Extract redirectedCheckoutUrl from the response and throw an error if it's not found
-  //  - Return the redirectedCheckoutUrl
-  return Promise.resolve("");
+  const cartRedirectResp = await bcGqlFetch<CreateCartRedirectResp, CreateCartRedirectVars>(
+    createCartRedirectQuery,
+    {
+      cartId,
+    }
+  );
+
+  const url = cartRedirectResp.data.cart.createCartRedirectUrls.redirectUrls.redirectedCheckoutUrl;
+  if (!url) {
+    throw new Error("Creating cart redirect URL failed");
+  }
+
+  return url;
 };
