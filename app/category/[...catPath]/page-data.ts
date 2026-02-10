@@ -2,60 +2,173 @@ import { bcGqlFetch } from "@/lib/bc-client/bc-client-gql";
 import { BasicCategory, CategoryProduct } from "@/types/catalog";
 import { cache } from "react";
 
-// TODO: Add `categoryFragment`
-//  - This is a GraphQL fragment
-//  - It should include name, path, description, and defaultImage
-//  - defaultImage has a url with a width argument, and an altText
+const categoryFragment = `
+fragment categoryFields on Category {
+  name
+  path
+  description
+  defaultImage {
+    url(width: $mainImgSize)
+    altText
+  }
+}
+`;
 
-// TODO: Add `productFragment`
-//  - This is a GraphQL fragment
-//  - It should include sku, name, path, prices, and defaultImage
-//  - From prices, select price, with value and currencyCode sub-fields
-//  - defaultImage has a url with a width argument, and an altText
+const productFragment = `
+fragment productFields on Product {
+  sku
+  name
+  path
+  prices {
+    price {
+      value
+      currencyCode
+    }
+  }
+  defaultImage {
+    url(width: $thumbnailSize)
+    altText
+  }
+}
+`;
 
 // TODO: Add `pageFragment`
 //  - This is a GraphQL fragment
 //  - It should include fields on the PageInfo type
 //  - hasNextPage, hasPreviousPage, startCursor, and endCursor
 
-// TODO: Add the full category queries
-//  - This will be two separate queries - `getCategoryWithBeforeQuery` and `getCategoryWithAfterQuery` - because of different arguments
-//  - Both queries should use site.route.node
-//  - Select fields of node specifically on the Category type
-//    - Use the `categoryFragment` for basic fields
-//    - Also select a list of products
-//    - Use the `productFragment` for each node in the products list
-//    - products needs either last/before or first/after arguments
-//  - The whole query needs variables for $path, $mainImgSize, $thumbnailSize, and $limit
-//  - The "before" query needs a variable for $before, and the "after" query needs a variable for $after
+const getCategoryWithBeforeQuery = `
+query GetCategory(
+  $path: String!,
+  $mainImgSize: Int!,
+  $thumbnailSize: Int!,
+  $limit: Int,
+  $before: String
+) {
+  site {
+    route(path: $path) {
+      node {
+        __typename
+        ... on Category {
+          ... categoryFields
+          products(
+            last: $limit,
+            before: $before
+          ) {
+            edges {
+              node {
+                ... productFields
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 
-// TODO: Define the `GetCategoryWithProductsVars` interface
-//  - This should match the expected variables for the two `getCategory` queries
-//  - `before` and `after` will both need to be optional
+${categoryFragment}
 
-// TODO: Define the `GetCategoryWithProductsResp` interface
-//  - The `BasicCategory` and `CategoryProduct` interfaces provide most of the response shape
-//  - Include the above interfaces in the full response structure, including site.route, edges.node, etc
+${productFragment}
+`;
+
+const getCategoryWithAfterQuery = `
+query GetCategory(
+  $path: String!,
+  $mainImgSize: Int!,
+  $thumbnailSize: Int!,
+  $limit: Int,
+  $after: String
+) {
+  site {
+    route(path: $path) {
+      node {
+        __typename
+        ... on Category {
+          ... categoryFields
+          products(
+            first: $limit,
+            after: $after
+          ) {
+            edges {
+              node {
+                ... productFields
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+${categoryFragment}
+
+${productFragment}
+`;
+
+interface GetCategoryWithProductsVars {
+  path: string;
+  mainImgSize: number;
+  thumbnailSize: number;
+  limit: number;
+  before?: string;
+  after?: string;
+}
+
+interface GetCategoryWithProductsResp {
+  data: {
+    site: {
+      route: {
+        node: BasicCategory & {
+          "__typename": string;
+          products: {
+            edges: {
+              node: CategoryProduct;
+            }[]
+          }
+        }
+      }
+    }
+  }
+}
 
 /**
  * Fetch a category and its products
  */
 export const getCategoryWithProducts = cache(async ({
-  // TODO: Add the function's destructured parameters here
-  //  - Most of these match the GraphQL query variables
-  //  - path, mainImgSize, and thumbnailSize are separate params
-  //  - A single `page` param will contain the limit and either `before` or `after`
-  //  - The customerToken is also needed
+  path,
+  mainImgSize,
+  thumbnailSize,
+  page,
+  customerToken
 }: {
-  // TODO: Include type information for all destructured parameters
+  path: string,
+  mainImgSize: number,
+  thumbnailSize: number,
+  page: {limit: number, before?: string, after?: string},
+  customerToken?: string
 }) => {
-  // TODO: Replace this with the actual query logic
-  //  - Use bcGqlFetch with the response and var types
-  //    - Use the existence of page.before to determine which GQL query to pass
-  //    - Include params (limit, before, and after can be included by using the spread operator with `page`)
-  //    - Include the customerToken
-  //  - Extract category from the response and verify it exists and is of type `Category`
-  // - Extract a flat products array from the response, or use an empty array
-  // - Return an object with the base category fields (use spread operator) and `products`
-  return Promise.resolve({});
+  const categoryResp = await bcGqlFetch<GetCategoryWithProductsResp, GetCategoryWithProductsVars>(
+    page.before ? getCategoryWithBeforeQuery : getCategoryWithAfterQuery,
+    {
+      path,
+      mainImgSize,
+      thumbnailSize,
+      ...page,
+    },
+    customerToken
+  );
+
+  const category = categoryResp.data.site.route.node;
+  if (!category || category.__typename !== "Category") {
+    throw new Error(`No category found for "${path}"`);
+  }
+
+  const products = (category.products?.edges ?? []).map(edge => edge.node);
+
+  return {
+    ...category,
+    products,
+  };
 });
