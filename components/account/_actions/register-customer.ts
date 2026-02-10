@@ -3,18 +3,65 @@
 import { bcGqlFetch } from "@/lib/bc-client/bc-client-gql";
 import { redirect } from "next/navigation";
 
-// TODO: Add `registerQuery`
-//  - This is a GraphQL mutation
-//  - It should use customer.registerCustomer
-//  - Needs variables for $email, $firstName, $lastName, $password
-//  - Select entityId from customer
-//  - Select any error message on the various error types (EmailAlreadyInUseError, AccountCreationDisabledError, CustomerRegistrationError, ValidationError)
+const registerQuery = `
+mutation Register(
+  $email: String!,
+  $firstName: String!,
+  $lastName: String!,
+  $password: String!
+) {
+  customer {
+    registerCustomer(
+      input: {
+        email: $email,
+        firstName: $firstName,
+        lastName: $lastName,
+        password: $password
+      }
+    ) {
+      customer {
+        entityId
+      }
+      errors {
+        ... on EmailAlreadyInUseError {
+          message
+        }
+        ... on AccountCreationDisabledError {
+          message
+        }
+        ... on CustomerRegistrationError {
+          message
+        }
+        ... on ValidationError {
+          message
+        }
+      }
+    }
+  }
+}
+`;
 
-// TODO: Define the `RegisterVars` interface
-//  - This should match the expected variables for `registerCustomerQuery`
+interface RegisterVars {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+}
 
-// TODO: Define the `RegisterResp` interface
-//  - Matches the shape of `registerCustomerQuery`
+interface RegisterResp {
+  data: {
+    customer: {
+      registerCustomer: {
+        customer: {
+          entityId: number;
+        };
+        errors?: {
+          message: string;
+        }[]
+      }
+    }
+  }
+}
 
 /**
  * Register a new customer
@@ -30,14 +77,30 @@ export const registerCustomer = async ({
   lastName: string,
   password: string,
 }) => {
-  // TODO: Replace this with the actual mutation logic
-  //  - Use bcGqlFetch with the response and var types
-  //    - Pass registerQuery as the query
-  //    - Pass email, firstName, lastName, password
-  //  - Extract the customer object from the response
-  //  - Extract errors from the response and return an appropriate failure response object if any errors are present
-  //  - If no errors occur, redirect to "/login"
-  return Promise.resolve(
-    { success: false, error: "Registration not implemented." }
-  );
+  try {
+    const customerResp = await bcGqlFetch<RegisterResp, RegisterVars>(
+      registerQuery,
+      {
+        email,
+        firstName,
+        lastName,
+        password,
+      }
+    );
+
+    const customer = customerResp.data.customer.registerCustomer.customer;
+    const errors = customerResp.data.customer.registerCustomer.errors;
+    if (!customer) {
+      let errorMsg = "Customer registration failed";
+      if (errors) {
+        errorMsg = errors.map(error => error.message).join("; ")
+      }
+      return { success: false, error: errorMsg };
+    }
+  } catch(err) {
+    const error = (err instanceof Error) ? err.message : String(err);
+    return { success: false, error };
+  }
+
+  redirect("/login");
 };
