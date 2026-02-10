@@ -23,6 +23,8 @@ export default async function CategoryPage({
 
   const { before, after } = await searchParams ?? {};
 
+  // TODO: Use getCurrentCustomer to get the current customer from the session cookie
+
   let category;
   try {
     category = await getCategoryWithProducts({
@@ -34,6 +36,7 @@ export default async function CategoryPage({
         before: before ? String(before) : undefined,
         after: after ? String(after) : undefined,
       },
+      // TODO: Pass the customer token so the catalog query has customer context
     });
   } catch(err) {
     console.log(err);

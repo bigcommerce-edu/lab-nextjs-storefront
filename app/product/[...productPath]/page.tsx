@@ -15,11 +15,14 @@ export default async function ProductPage({
 
   const imgSize = 900;
 
+  // TODO: Use getCurrentCustomer to get the current customer from the session cookie
+
   let product;
   try {
     product = await getProduct({
       path,
       imgSize,
+      // TODO: Pass the customer token so the catalog query has customer context
     });
   } catch (err) {
     console.log(err);
