@@ -4,12 +4,18 @@ import { useState } from "react";
 import { logout } from "./_actions/logout";
 
 const LogoutButton = () => {
-  // TODO: Create a state value for `loading`
+  const [loading, setLoading] = useState(false);
 
   return (
-    <button>
-      {/* TODO: Render the button */}
-      {/*  - Disable the button and set its label based on `loading` */}
+    <button 
+      disabled={loading} 
+      className="mx-4 font-bold cursor-pointer hover:underline"
+    >
+      {loading ? (
+        <span>...</span>
+      ) : (
+        <span>Log out</span>
+      )}
     </button>
   );
 }
