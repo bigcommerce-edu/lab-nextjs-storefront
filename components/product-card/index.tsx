@@ -3,23 +3,31 @@ import Image from "next/image";
 import Link from "next/link";
 
 const ProductCard = ({ 
-  // TODO: Add destructured parameters
-  //  - product and thumbnailSize
+  product, 
+  thumbnailSize,
 }: { 
-  // TODO: Add type information for destructured parameters
-  //  - product is a `CategoryProduct`
+  product: CategoryProduct, 
+  thumbnailSize: number,
 }) => {
-  // TODO: Create a currencyFormatter w/ Intl.NumberFormat
-  //  - Get the currency from product.prices.price.currencyCode
-
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: product.prices.price.currencyCode,
+  });
+  
   return (
-    <>
-      {/* TODO: Render the product card */}
-      {/*  - Wrap everything in a <Link> */}
-      {/*  - Check for and render defaultImage */}
-      {/*  - Render name as a heading, and sku */}
-      {/*  - Use the currencyFormatter to format the price */}
-    </>
+    <Link className="font-bold hover:underline" href={`/product${product.path}`}>
+      {product.defaultImage && (
+        <Image src={product.defaultImage.url} 
+          alt={product.defaultImage.altText ?? ''}
+          width={thumbnailSize} height={thumbnailSize / 2}
+          className="max-w-full inline-block" />
+      )}
+      <h2 className="text-lg">{product.name}</h2>
+      <p className="font-normal text-sm">{product.sku}</p>
+      <p className="font-normal my-2">
+        {currencyFormatter.format(product.prices.price.value)}
+      </p>
+    </Link>
   );
 };
 
