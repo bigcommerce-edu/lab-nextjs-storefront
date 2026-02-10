@@ -24,7 +24,9 @@ const Header = async () => {
             )}
           </a>
         </h1>
-        {/* TODO: Render the MiniCart */}
+        <div className="flex">
+          <MiniCart />
+        </div>
       </div>
       <div>
         {navCategories && (
