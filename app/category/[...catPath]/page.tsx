@@ -10,10 +10,10 @@ import { getCurrentCustomer } from "@/lib/getCurrentCustomer";
 
 export default async function CategoryPage({
   params,
-  // TODO: Add searchParams
+  searchParams,
 }: {
   params: Promise<{ catPath: string[] }>,
-  // TODO: The type of `searchParams` is a Promise that returns an object with `before` and `after` (both optional)
+  searchParams?: Promise<{ before?: string, after?: string }>,
 }) {
   const { catPath } = await params;
   const path = `/${catPath.join('/')}`;
@@ -21,7 +21,7 @@ export default async function CategoryPage({
   const mainImgSize = 500;
   const thumbnailSize = 500;
 
-  // TODO: Extract `before` and `after` from searchParams
+  const { before, after } = await searchParams ?? {};
 
   let category;
   try {
@@ -29,8 +29,11 @@ export default async function CategoryPage({
       path,
       mainImgSize,
       thumbnailSize,
-      // TODO: Expand the values passed for `page` to include `before` or `after` depending on the presence of those querystring params
-      page: { limit: 12 },
+      page: { 
+        limit: 12,
+        before: before ? String(before) : undefined,
+        after: after ? String(after) : undefined,
+      },
     });
   } catch(err) {
     console.log(err);
@@ -69,9 +72,24 @@ export default async function CategoryPage({
         ))}
       </ul>
 
-      {/* TODO: Render the pagination controls */}
-      {/*  - Check for the presence of `category.page.before` and `category.page.after` (each will only be populated if there was an appropriate cursor in the GQL response) */}
-      {/*  - Render each pagination link as a <Link> with the current category URL path and appropriate `before` or `after` querystring param */}
+      <div className="w-full flex justify-center">
+          {category.page.before && (
+            <Link
+              className="mx-4"
+              href={`/category${category.path}?before=${category.page.before}`}
+            >
+              <ArrowLongLeft />
+            </Link>
+          )}
+          {category.page.after && (
+            <Link
+              className="mx-4"
+              href={`/category${category.path}?after=${category.page.after}`}
+            >
+              <ArrowLongRight />
+            </Link>
+          )}
+      </div>
     </>
   );
 }

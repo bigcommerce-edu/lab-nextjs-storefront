@@ -32,13 +32,15 @@ fragment productFields on Product {
 }
 `;
 
-// TODO: Add `pageFragment`
-//  - This is a GraphQL fragment
-//  - It should include fields on the PageInfo type
-//  - hasNextPage, hasPreviousPage, startCursor, and endCursor
+const pageFragment = `
+fragment pageFields on PageInfo {
+  hasNextPage
+  hasPreviousPage
+  startCursor
+  endCursor
+}
+`;
 
-// TODO: Add `pageInfo` as a selection of `products`, using `pageFragment`
-//  - Make sure to add both the sub-selection and the fragment itself (at the end of the string)
 const getCategoryWithBeforeQuery = `
 query GetCategory(
   $path: String!,
@@ -57,6 +59,9 @@ query GetCategory(
             last: $limit,
             before: $before
           ) {
+            pageInfo {
+              ... pageFields
+            }
             edges {
               node {
                 ... productFields
@@ -72,10 +77,10 @@ query GetCategory(
 ${categoryFragment}
 
 ${productFragment}
+
+${pageFragment}
 `;
 
-// TODO: Add `pageInfo` as a selection of `products`, using `pageFragment`
-//  - Make sure to add both the sub-selection and the fragment itself (at the end of the string)
 const getCategoryWithAfterQuery = `
 query GetCategory(
   $path: String!,
@@ -94,6 +99,9 @@ query GetCategory(
             first: $limit,
             after: $after
           ) {
+            pageInfo {
+              ... pageFields
+            }
             edges {
               node {
                 ... productFields
@@ -109,6 +117,8 @@ query GetCategory(
 ${categoryFragment}
 
 ${productFragment}
+
+${pageFragment}
 `;
 
 interface GetCategoryWithProductsVars {
@@ -127,7 +137,12 @@ interface GetCategoryWithProductsResp {
         node: BasicCategory & {
           "__typename": string;
           products: {
-            // TODO: Add the definition of `pageInfo`, matching the structure of the fragment
+            pageInfo: {
+              hasNextPage: boolean;
+              hasPreviousPage: boolean;
+              startCursor: string | null;
+              endCursor: string | null;
+            }
             edges: {
               node: CategoryProduct;
             }[]
@@ -171,14 +186,16 @@ export const getCategoryWithProducts = cache(async ({
   }
 
   const products = (category.products?.edges ?? []).map(edge => edge.node);
-  // TODO: Extract pageOpts from the response
-  //  - A single object with both `before` and `after` values
-  //  - `before` should depend on whether there is a startCursor
-  //  - `after` should depend on whether there is an endCursor
+  const pageOpts = {
+    before: category.products.pageInfo.hasPreviousPage 
+      ? category.products.pageInfo.startCursor : null,
+    after: category.products.pageInfo.hasNextPage
+      ? category.products.pageInfo.endCursor : null,
+  };
 
   return {
     ...category,
     products,
-    // TODO: Add a `page` object to the response, using `pageOpts`
+    page: pageOpts,
   };
 });
