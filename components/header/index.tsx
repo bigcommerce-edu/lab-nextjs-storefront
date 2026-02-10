@@ -6,6 +6,7 @@ import AccountLinks from "../account-links";
 import { getCurrentCustomer } from "@/lib/getCurrentCustomer";
 
 const Header = async () => {
+  // TODO: Include `navCategories` in the destructuring
   const { settings } = await getHeaderSettings({});
 
   const emptySettings = { logoImageUrl: null, logoText: null, storeName: null };
@@ -24,7 +25,13 @@ const Header = async () => {
             )}
           </a>
         </h1>
+        {/* TODO: Render the AccountLinks */}
+        {/* TODO: Render the MiniCart */}
       </div>
+      {/* TODO: Add navigation links here */}
+      {/*  - Check for the existence of `navCategories` */}
+      {/*  - Render a <ul> */}
+      {/*  - Loop over `navCategories` and use `path` for the href and key */}
     </header>
   )
 }
