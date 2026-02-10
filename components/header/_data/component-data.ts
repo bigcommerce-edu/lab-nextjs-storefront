@@ -1,6 +1,7 @@
 import { bcGqlFetch } from "@/lib/bc-client/bc-client-gql";
 import { cache } from "react";
 
+// TODO: Add `categoryTree` (with entityId, name, and path) to this query
 const getHeaderSettingsQuery = `
 query GetSettings($logoSize: Int!) {
   site {
@@ -37,9 +38,15 @@ interface GetHeaderSettingsResp {
           }
         }
       }
+      // TODO: Make sure `categoryTree` is represented in the response type
+      //  - Should be an array of `NavCategory` objects
     }
   }
 }
+
+// TODO: Add `NavCategory` interface to represent what a category looks like in GraphQL response
+//  - entityId is a number
+//  - name and path are strings
 
 /**
  * Fetch basic store settings for the header
@@ -58,6 +65,8 @@ export const getHeaderSettings = cache(async ({
   );
 
   const settings = settingsResp.data.site.settings;
+  // TODO: Extract `navCategories` from the response
+  //  - This will be the content of `site.categoryTree`
 
   return {
     settings: {
@@ -65,5 +74,6 @@ export const getHeaderSettings = cache(async ({
       logoText: settings.logoV2.text ?? null,
       logoImageUrl: settings.logoV2.image?.url ?? null,
     },
+    // TODO: Add `navCategories` as a top-level sibling of `settings`
   };
 });
