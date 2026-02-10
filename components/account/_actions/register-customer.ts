@@ -30,6 +30,13 @@ export const registerCustomer = async ({
   lastName: string,
   password: string,
 }) => {
+  // TODO: Replace this with the actual mutation logic
+  //  - Use bcGqlFetch with the response and var types
+  //    - Pass registerQuery as the query
+  //    - Pass email, firstName, lastName, password
+  //  - Extract the customer object from the response
+  //  - Extract errors from the response and return an appropriate failure response object if any errors are present
+  //  - If no errors occur, redirect to "/login"
   return Promise.resolve(
     { success: false, error: "Registration not implemented." }
   );
