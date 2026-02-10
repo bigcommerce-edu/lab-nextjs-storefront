@@ -4,9 +4,10 @@ import PageHeading from "@/components/page-heading";
 export default function LoginPage() {
   return (
     <>
-      {/* TODO: Render the login page */}
-      {/*  - Render a PageHeading with "Log In" */}
-      {/*  - Render a LoginForm */}
+      <PageHeading>Log In</PageHeading>
+      <div className="w-1/3">
+        <LoginForm />
+      </div>
     </>
   );
 }
