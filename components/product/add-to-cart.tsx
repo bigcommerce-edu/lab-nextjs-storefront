@@ -5,20 +5,27 @@ import { useActionState } from "react";
 import { addProductToCart } from "./_actions/add-product-to-cart";
 
 const AddToCart = ({
-  // TODO: Add product
+  product,
 }: {
-  // TODO: product is of the type `Product`
+  product: Product,
 }) => {
-  // TODO: Create `addThisProductToCart` by binding `{ productId: product.entityId }` to addProductToCart
-
-  // TODO: Call useActionState with addThisProductToCart and an initial state of `null`
-  //  - Get `formAction` and `pending` from the result
+  const addThisProductToCart = addProductToCart.bind(null, {
+    productId: product.entityId,
+  });
+  const [, formAction, pending] = useActionState(addThisProductToCart, null);
 
   return (
-    <form>
-      {/* TODO: Render the button */}
-      {/*  - Use formAction as the form's `action` */}
-      {/*  - Disable the button and set its label based on `pending` */}
+    <form action={formAction}>
+      <button disabled={pending}
+        className="p-2 rounded-md text-lg w-44 cursor-pointer bg-neutral-700 text-white hover:bg-neutral-500 disabled:bg-neutral-500">
+          {pending ? (
+            <span>...</span>
+          ) : (
+            <span>
+              Add to Cart
+            </span>
+          )}
+        </button>
     </form>
   );
 };
