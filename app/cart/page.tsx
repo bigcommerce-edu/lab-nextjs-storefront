@@ -5,12 +5,20 @@ import { getCookieName, isSecure } from "@/lib/cookies";
 import { cookies } from "next/headers";
 
 export default async function CartPage() {
-  // TODO: Use cookies() to get cartId cookie
+  const cookieStore = await cookies();
+  const secure = await isSecure();
+  const cookieName = getCookieName({ name: "cartId", secure });
 
-  // TODO: If there's a cartId, fetch the cart details with getCartDetails
-  //  - Delete the cartId cookie if no cart is found
+  const cartId = cookieStore.get(cookieName)?.value;
 
-  // TODO: Log the cart info
+  let cart;
+  try {
+    cart = (cartId) ? await getCartDetails({ cartId }) : null;
+  } catch (err) {
+    cart = null;
+  }
+
+  console.log(cart);
 
   return (
     <>

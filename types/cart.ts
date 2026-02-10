@@ -20,11 +20,22 @@ fragment cartFields on Cart {
 `;
 
 export interface CartItem {
-  // TODO: Fill in fields, matching GraphQL schema
-  //  - Include entityId, productEntityId, sku, name, imageUrl, quantity, salePrice, extendedSalePrice
-  //  - salePrice and extendedSalePrice are objects with a value
+  entityId: string;
+  productEntityId: number;
+  sku?: string;
+  name: string;
+  imageUrl?: string;
+  quantity: number;
+  salePrice: {
+    value: number;
+  };
+  extendedSalePrice: {
+    value: number;
+  };
 }
 
 export interface BasicCartDetails extends BasicCart {
-  // TODO: BasicCartDetails adds baseAmount (with a value) to BasicCart
+  baseAmount: {
+    value: number
+  };
 }
