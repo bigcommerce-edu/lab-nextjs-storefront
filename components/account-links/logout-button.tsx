@@ -11,6 +11,7 @@ const LogoutButton = () => {
   //  - Call logout action
   //  - Set loading to false after the logout action completes
 
+  // TODO: Add onClick handler to the button, calling submitLogout
   return (
     <button 
       disabled={loading} 
