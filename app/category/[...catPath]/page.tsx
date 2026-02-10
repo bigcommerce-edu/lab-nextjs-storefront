@@ -36,16 +36,37 @@ export default async function CategoryPage({
     category = null;
   }
 
-  // TODO: Replace this with a check for whether the category was found
-  //  - If no category was found, return notFound()
-  console.log(category);
+  if (!category) {
+    return notFound();
+  }
 
   return (
     <>
-      {/* TODO: Render the category page */}
-      {/*  - Render a PageHeading with the category name */}
-      {/*  - Check for and render defaultImage and description */}
-      {/*  - Render a <ul>, loop over products and render a ProductCard for each */}
+      <PageHeading>{category.name}</PageHeading>
+
+      <div className="w-full max-w-screen-2xl flex justify-center">
+        <div className="px-8 border-x-2 border-neutral-300 xl:w-2/3">
+          {category.defaultImage && (
+            <Image src={category.defaultImage.url} 
+              alt={category.defaultImage.altText ?? ''}
+              width={mainImgSize} height={mainImgSize / 2}
+              className="max-w-full inline-block mr-4
+                md:w-1/2 md:max-w-3xl md:float-left" />
+          )}
+          {category.description && (
+            <div className="text-lg" dangerouslySetInnerHTML={{__html: category.description}} />
+          )}
+        </div>
+      </div>
+
+      <ul className="w-full max-w-screen-2xl grid grid-cols-1
+        md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8">
+        {category.products.map(product => (
+          <li key={product.sku} className="bg-neutral-200 rounded-md p-4">
+            <ProductCard product={product} thumbnailSize={thumbnailSize} />
+          </li>
+        ))}
+      </ul>
     </>
   );
 }
