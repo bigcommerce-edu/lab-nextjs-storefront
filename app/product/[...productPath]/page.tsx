@@ -6,17 +6,25 @@ import AddToCart from '@/components/product/add-to-cart';
 import { getCurrentCustomer } from '@/lib/getCurrentCustomer';
 
 export default async function ProductPage({
-  // TODO: Add params
+  params,
 }: PageProps<"/product/[...productPath]">) {
-  // TODO: Get `productPath` from params and form a full path from all segments
+  const { productPath } = await params;
+  const path = `/${productPath.join('/')}`;
 
-  // TODO: Define static imgSize value
+  const imgSize = 900;
 
-  // TODO: Fetch the product
-  //  - Use `getProduct` 
-  //  - Pass in path and imgSize
-
-  // TODO: Log the product response
+  let product;
+  try {
+    product = await getProduct({
+      path,
+      imgSize,
+    });
+  } catch (err) {
+    console.log(err);
+    product = null;
+  }
+  
+  console.log(product);
 
   return (
     <>
