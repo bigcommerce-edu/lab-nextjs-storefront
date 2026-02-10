@@ -25,20 +25,40 @@ export default async function ProductPage({
     console.log(err);
     product = null;
   }
-  
-  // TODO: Replace this with a check for whether the product was found
-  //  - If no product was found, return notFound()
-  console.log(product);
 
-  // TODO: Create a currencyFormatter w/ Intl.NumberFormat
-  //  - Get the currency from product.prices.price.currencyCode
+  if (!product) {
+    return notFound();
+  }
+
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: product.prices.price.currencyCode,
+  });
 
   return (
     <>
-      {/* TODO: Render the product page */}
-      {/*  - Render a PageHeading with the product name */}
-      {/*  - Check for and render defaultImage and description */}
-      {/*  - Use currencyFormatter to format the price */}
+      <PageHeading>{product.name}</PageHeading>
+      <div className="w-full max-w-screen-2xl flex flex-wrap justify-center">
+        <div className="w-1/2">
+          {product.defaultImage && (
+            <Image src={product.defaultImage.url} 
+              alt={product.defaultImage.altText ?? ''}
+              width={imgSize} height={imgSize / 2}
+              className="" />
+          )}
+        </div>
+        <div className="w-1/2 p-4">
+          <p className="my-2"><label className="font-bold">SKU:</label> {product.sku}</p>
+          {product.description && (
+            <div dangerouslySetInnerHTML={{__html: product.description}}
+              className="my-2" />
+          )}
+          <div className="text-lg my-4">
+            <label className="font-bold">Price:</label>
+            <span> {currencyFormatter.format(product.prices.price.value)}</span>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
