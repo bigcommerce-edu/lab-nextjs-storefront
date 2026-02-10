@@ -29,6 +29,7 @@ export default async function CategoryPage({
       path,
       mainImgSize,
       thumbnailSize,
+      // TODO: Expand the values passed for `page` to include `before` or `after` depending on the presence of those querystring params
       page: { limit: 12 },
     });
   } catch(err) {
@@ -67,6 +68,10 @@ export default async function CategoryPage({
           </li>
         ))}
       </ul>
+
+      {/* TODO: Render the pagination controls */}
+      {/*  - Check for the presence of `category.page.before` and `category.page.after` (each will only be populated if there was an appropriate cursor in the GQL response) */}
+      {/*  - Render each pagination link as a <Link> with the current category URL path and appropriate `before` or `after` querystring param */}
     </>
   );
 }
