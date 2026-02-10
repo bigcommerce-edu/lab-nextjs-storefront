@@ -5,21 +5,38 @@ import { getCookieName, isSecure } from "@/lib/cookies";
 import { getCurrentCustomer } from "@/lib/getCurrentCustomer";
 import { cookies } from "next/headers";
 
-// TODO: Add `logoutQuery`
-//  - This is a GraphQL mutation
-//  - It should use logout
-//  - Select `result` from logout
+const logoutQuery = `
+mutation Logout {
+  logout {
+    result
+  }
+}
+`;
 
-// TODO: Define the `LogoutResp` interface
-//  - Matches the shape of `logoutQuery`
+interface LogoutResp {
+  data: {
+    logout: {
+      result: string;
+    }
+  }
+}
 
 /**
  * Perform logout
  */
 export const logout = async () => {
-  // TODO: Use the `getCurrentCustomer` helper function to get the current customer from the session cookie
+  const currentCustomer = await getCurrentCustomer();
 
-  // TODO: If there is a current customer with a token, use `bcGqlFetch` with `logoutQuery` and the token
+  if (currentCustomer?.token) {
+    await bcGqlFetch<LogoutResp>(
+      logoutQuery,
+      currentCustomer?.token
+    );
+  }
 
-  // TODO: Delete any existing customer cookie
+  const cookieStore = await cookies();
+  const secure = await isSecure();
+  const cookieName = getCookieName({ name: "customer", secure });
+
+  cookieStore.delete(cookieName);
 };
