@@ -1,45 +1,98 @@
 import { bcGqlFetch } from "@/lib/bc-client/bc-client-gql";
 import { BasicCartDetails, CartItem } from "@/types/cart";
 
-// TODO: Define a cartItemFields string once, since we'll use it to define fragments on two types
-//  - Include entityId, productEntityId, sku, name, imageUrl, quantity, salePrice, extendedSalePrice
-//  - salePrice and extendedSalePrice are objects with a value
+const cartItemFields = `
+  entityId
+  productEntityId
+  sku
+  name
+  imageUrl
+  quantity
+  salePrice {
+    value
+  }
+  extendedSalePrice {
+    value
+  }
+`;
 
-// TODO: Add `getCartDetailsQuery`
-//  - This is a GraphQL query
-//  - It should use cart.cart
-//  - Needs a $cartId variable
-//  - Include entityId, curencyCode, amount, baseAmount, lineItems
-//  - amount and baseAmount are objects with a value
-//  - lineItems is an object with a totalQuantity, physicalItems, and digitalItems
-//  - Include PhysicalItemFields and DigitalItemFields fragments, concatenating cartItemFields to each
+const getCartsDetailsQuery = `
+query GetCart($cartId: String!) {
+  site {
+    cart(entityId: $cartId) {
+      entityId
+      currencyCode
+      amount {
+        value
+      }
+      baseAmount {
+        value
+      }
+      lineItems {
+        totalQuantity,
+        physicalItems {
+          ...PhysicalItemFields
+        }
+        digitalItems {
+          ...DigitalItemFields
+        }
+      }
+    }
+  }
+}
 
-// TODO: Define the `GetCartDetailsVars` interface
-//  - This should match the expected variables for `getCartDetailsQuery`
+fragment PhysicalItemFields on CartPhysicalItem {
+  ${cartItemFields}
+}
 
-// TODO: Define the `GetCartDetailsResp` interface
-//  - The `BasicCartDetails` interface provides most of the response shape
-//  - Fill out the rest of the response structure, including site.cart
-//  - Add lineItems to BasicCartDetails
-//    - Include totalQuantity, physicalItems, and digitalItems
-//    - physicalItems and digitalItems are arrays of CartItem
+fragment DigitalItemFields on CartDigitalItem {
+  ${cartItemFields}
+}
+`;
+
+interface GetCartDetailsVars {
+  cartId: string;
+}
+
+interface GetCartDetailsResp {
+  data: {
+    site: {
+      cart: BasicCartDetails & {
+        lineItems: {
+          totalQuantity: number;
+          physicalItems: CartItem[];
+          digitalItems: CartItem[];
+        }
+      }
+    }
+  }
+}
 
 /**
  * Fetch details of a cart
  */
 export const getCartDetails = async ({
-  // TODO: Add cartId
+  cartId,
 }: {
-  // TODO: cartId is a string
+  cartId: string,
 }) => {
-  // TODO: Replace this with the actual query logic
-  //  - Use bcGqlFetch with the response and var types
-  //    - Pass getCartDetailsQuery as the query
-  //    - Include cartId
-  //  - Extract cart from the response and verify it exists
-  //  - Return an object with all cart fields (using spread operator), plus totalQuantity (from cart.lineItems) and lineItems
-  //    - lineItems should be a flat array concatenating physicalItems and digitalItems
-  return Promise.resolve({});
+  const cartResp = await bcGqlFetch<GetCartDetailsResp, GetCartDetailsVars>(
+    getCartsDetailsQuery,
+    {
+      cartId,
+    }
+  );
+
+  const cart = cartResp.data.site.cart;
+  if (!cart) {
+    throw new Error("Cart not found");
+  }
+
+  return {
+    ...cart,
+    totalQuantity: cart.lineItems.totalQuantity,
+    lineItems: cart.lineItems.physicalItems.concat(cart.lineItems.digitalItems),
+  };
 };
 
 // TODO: Add `createCartRedirectQuery`
