@@ -5,19 +5,35 @@ import { getCookieName, isSecure } from "@/lib/cookies";
 import { cookies } from "next/headers";
 
 const MiniCart = async () => {
-  // TODO: Use cookies() to get cartId cookie
+  const cookieStore = await cookies();
+  const secure = await isSecure();
+  const cookieName = getCookieName({ name: "cartId", secure });
 
-  // TODO: If there's a cartId, fetch the cart details with getCart
-  //  - Delete the cartId cookie if no cart is found
+  const cartId = cookieStore.get(cookieName)?.value;
 
-  // TODO: Create a currencyFormatter w/ Intl.NumberFormat
-  //  - Get the currency from the cart's currencyCode
+  let cart;
+  if (cartId) {
+    try {
+      cart = await getCart({ cartId });
+    } catch (err) {
+      cart = null;
+      cookieStore.delete(cookieName);
+    }
+  } else {
+    cart = null;
+  }
+
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: cart?.currencyCode ?? 'USD',
+  });
 
   return (
     <div>
-      {/* TODO: Render the mini-cart with <Link> */}
-      {/*  - Path is "/cart" */}
-      {/*  - Render "<quantity> - <amount>" after the link if there's a cart */}
+      <Link href="/cart"><Cart className="w-6 h-6 inline-block" /></Link>
+      {cart && (
+        <span>({cart.totalQuantity}) - {currencyFormatter.format(cart.amount.value)}</span>
+      )}
     </div>
   );
 };
