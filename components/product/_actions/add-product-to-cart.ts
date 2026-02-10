@@ -5,45 +5,149 @@ import { getCookieName, isSecure } from "@/lib/cookies";
 import { BasicCart, CartFragment } from "@/types/cart";
 import { cookies } from "next/headers";
 
-// TODO: Add `createCartQuery`
-//  - This is a GraphQL mutation
-//  - It should use cart.createCart
-//  - Needs variables for $productId and $quantity
-//  - Formulate this to support a single item in input.lineItems
-//  - Use CartFragment for fields to select
+const createCartQuery = `
+mutation CreateCart(
+  $productId: Int!,
+  $quantity: Int!
+) {
+  cart {
+    createCart(
+      input: {
+        lineItems: [
+          {
+            quantity: $quantity,
+            productEntityId: $productId
+          }
+        ]
+      }
+    ) {
+      cart {
+        ...cartFields
+      }
+    }
+  }
+}
 
-// TODO: Define the `CreateCartVars` interface
-//  - This should match the expected variables for `createCartQuery`
+${CartFragment}
+`;
 
-// TODO: Define the `CreateCartResp` interface
-//  - The `BasicCart` interface provides most of the response shape
-//  - Fill out the rest of the response structure, including cart.createCart.cart
-//  - Add lineItems.totalQuantity to BasicCart
+interface CreateCartVars {
+  productId: number;
+  quantity: number;
+}
 
-// TODO: Add `createCart` function
-//  - Use bcGqlFetch with `createCartQuery`
-//  - Extract cart from the response
-//  - Return an object with all cart fields (using spread operator), plus totalQuantity (from cart.lineItems)
+interface CreateCartResp {
+  data: {
+    cart: {
+      createCart: {
+        cart: BasicCart & {
+          lineItems: {
+            totalQuantity: number;
+          }
+        }
+      }
+    }
+  }
+}
 
-// TODO: Add `addCartLineItemQuery`
-//  - This is a GraphQL mutation
-//  - It should use cart.addLineItem
-//  - Needs variables for $cartId and $productId and $quantity
-//  - Formulate this to support a single item in input.lineItems
-//  - Use CartFragment for fields to select
+const createCart = async ({
+  productId,
+  quantity,
+}: {
+  productId: number,
+  quantity: number,
+}) => {
+  const cartResp = await bcGqlFetch<CreateCartResp, CreateCartVars>(
+    createCartQuery,
+    {
+      productId,
+      quantity,
+    }
+  );
 
-// TODO: Define the `AddCartLineItemVars` interface
-//  - This should match the expected variables for `addCartLineItemQuery`
+  const cart = cartResp.data.cart.createCart.cart;
 
-// TODO: Define the `AddCartLineItemResp` interface
-//  - The `BasicCart` interface provides most of the response shape
-//  - Fill out the rest of the response structure, including cart.addLineItem.cart
-//  - Add lineItems.totalQuantity to BasicCart
+  return {
+    ...cart,
+    totalQuantity: cart.lineItems.totalQuantity,
+  };
+};
 
-// TODO: Add `addCartLineItem` function
-//  - Use bcGqlFetch with `addCartLineItemQuery`
-//  - Extract cart from the response
-//  - Return an object with all cart fields (using spread operator), plus totalQuantity (from cart.lineItems)
+const addCartLineItemQuery = `
+mutation AddCartLineItem(
+  $cartId: String!,
+  $productId: Int!,
+  $quantity: Int!
+) {
+  cart {
+    addCartLineItems(
+      input: {
+        cartEntityId: $cartId,
+        data: {
+          lineItems: [
+            {
+              quantity: $quantity,
+              productEntityId: $productId
+            }
+          ]
+        }
+      }
+    ) {
+      cart {
+        ...cartFields
+      }
+    }
+  }
+}
+
+${CartFragment}
+`;
+
+interface AddCartLineItemVars {
+  cartId: string;
+  productId: number;
+  quantity: number;
+}
+
+interface AddCartLineItemResp {
+  data: {
+    cart: {
+      addCartLineItems: {
+        cart: BasicCart & {
+          lineItems: {
+            totalQuantity: number;
+          }
+        }
+      }
+    }
+  }
+}
+
+const addCartLineItem = async ({
+  cartId,
+  productId,
+  quantity
+}: {
+  cartId: string,
+  productId: number,
+  quantity: number,
+}) => {
+  const cartResp = await bcGqlFetch<AddCartLineItemResp, AddCartLineItemVars>(
+    addCartLineItemQuery,
+    {
+      cartId,
+      productId,
+      quantity,
+    }
+  );
+
+  const cart = cartResp.data.cart.addCartLineItems.cart;
+
+  return {
+    ...cart,
+    totalQuantity: cart.lineItems.totalQuantity,
+  };
+}
 
 /**
  * Add item to new or existing cart
@@ -55,11 +159,37 @@ export const addProductToCart = async ({
   productId: number,
   quantity?: number,
 }) => {
-  // TODO: Replace this with action logic
-  //  - Use cookies() to get cartId cookie
-  //  - If cartId cookie exists, call addCartLineItem 
-  //  - If there's no cart yet (no cartId cookie or addCartLineItem fails), call createCart
-  //  - Set the cartId cookie with the new cart's id
-  //  - Return the cart object
-  return Promise.resolve({});
+  const cookieStore = await cookies();
+  const secure = await isSecure();
+  const cookieName = getCookieName({ name: "cartId", secure });
+
+  const cartId = cookieStore.get(cookieName)?.value;
+
+  let cart = null;
+  if (cartId) {
+    try {
+      cart = await addCartLineItem({ cartId, productId, quantity });
+    } catch (err) {
+      // Existing cart ID might not have matched a cart
+    }
+  }
+
+  if (!cart) {
+    try {
+      cart = await createCart({ productId, quantity });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  if (cart) {
+    cookieStore.set({
+      name: cookieName,
+      value: cart.entityId,
+      httpOnly: true,
+      secure,
+    });
+  }
+
+  return cart;
 };
