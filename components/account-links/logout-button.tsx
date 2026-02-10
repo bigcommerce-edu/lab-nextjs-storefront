@@ -4,14 +4,20 @@ import { useActionState } from "react";
 import { logout } from "./_actions/logout";
 
 const LogoutButton = () => {
-  // TODO: Call useActionState with the logout action and an initial state of `undefined`
-  //  - Get `formAction` and `pending` from the result
+  const [, formAction, pending] = useActionState(logout, undefined);
 
   return (
-    <form>
-      {/* TODO: Render the button */}
-      {/*  - Use formAction as the form's `action` */}
-      {/*  - Disable the button and set its label based on `pending` */}
+    <form action={formAction}>
+      <button
+        disabled={pending}
+        className="mx-4 font-bold cursor-pointer hover:underline"
+      >
+        {pending ? (
+          <span>...</span>
+        ) : (
+          <span>Log out</span>
+        )}
+      </button>
     </form>
   );
 }

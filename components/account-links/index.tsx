@@ -3,13 +3,20 @@ import Link from "next/link";
 import LogoutButton from "./logout-button";
 
 const AccountLinks = async () => {
-  // TODO: Use the `getCurrentCustomer` helper function to get the current customer from the session cookie
+  const currentCustomer = await getCurrentCustomer();
 
   return (
     <>
-      {/* TODO: Render the account links */}
-      {/*  - Render LogoutButton if there's a current customer */}
-      {/*  - Render a pair of Links if there is no customer - /register and /login */}
+      {currentCustomer?.entityId ? (
+        <LogoutButton />
+      ) : (
+        <>
+          <Link href="/register" className="mx-4 font-bold hover:underline">Register</Link>
+          |
+          <Link href="/login" className="mx-4 font-bold hover:underline">Log in</Link>
+        </>
+      )}
+
     </>
   );
 };
