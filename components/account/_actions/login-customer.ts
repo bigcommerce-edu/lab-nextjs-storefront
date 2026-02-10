@@ -28,6 +28,17 @@ export const loginCustomer = async ({
   email: string,
   password: string,
 }) => {
+  // TODO: Replace this with the actual mutation logic
+  //  - Get JWT_SECRET from environment variables and return an error response if it's not set
+  //  - Use bcGqlFetch with the response and var types
+  //    - Pass loginQuery as the query
+  //    - Pass email, password
+  //  - Extract the customer object from the response
+  //  - Extract the token from the response
+  //    - Return an error response if the token is not found
+  //    - Sign a JWT with the customer entityId and the token
+  //    - Set the customer cookie with the signed JWT
+  //  - If no errors occur, redirect to "/"
   return Promise.resolve(
     { success: false, error: 'Login not implemented' }
   );
