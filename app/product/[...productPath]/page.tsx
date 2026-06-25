@@ -26,10 +26,19 @@ export default async function ProductPage({
     product = null;
   }
   
+  // TODO: Replace this with a check for whether the product was found
+  //  - If no product was found, return notFound()
   console.log(product);
+
+  // TODO: Create a currencyFormatter w/ Intl.NumberFormat
+  //  - Get the currency from product.prices.price.currencyCode
 
   return (
     <>
+      {/* TODO: Render the product page */}
+      {/*  - Render a PageHeading with the product name */}
+      {/*  - Check for and render defaultImage and description */}
+      {/*  - Use currencyFormatter to format the price */}
     </>
   );
 }
