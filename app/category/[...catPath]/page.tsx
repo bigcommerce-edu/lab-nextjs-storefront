@@ -10,6 +10,7 @@ import { getCurrentCustomer } from "@/lib/getCurrentCustomer";
 
 export default async function CategoryPage({
   params,
+  // TODO: Add searchParams
 }: PageProps<"/category/[...catPath]">) {
   const { catPath } = await params;
   const path = `/${catPath.join('/')}`;
@@ -17,12 +18,15 @@ export default async function CategoryPage({
   const mainImgSize = 500;
   const thumbnailSize = 500;
 
+  // TODO: Extract `before` and `after` from searchParams
+
   let category;
   try {
     category = await getCategoryWithProducts({
       path,
       mainImgSize,
       thumbnailSize,
+      // TODO: Expand the values passed for `page` to include `before` or `after` depending on the presence of those querystring params
       page: { limit: 12 },
     });
   } catch(err) {
@@ -61,6 +65,10 @@ export default async function CategoryPage({
           </li>
         ))}
       </ul>
+
+      {/* TODO: Render the pagination controls */}
+      {/*  - Check for the presence of `category.page.before` and `category.page.after` (each will only be populated if there was an appropriate cursor in the GQL response) */}
+      {/*  - Render each pagination link as a <Link> with the current category URL path and appropriate `before` or `after` querystring param */}
     </>
   );
 }
