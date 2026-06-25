@@ -32,10 +32,16 @@ export default async function CategoryPage({
     category = null;
   }
 
+  // TODO: Replace this with a check for whether the category was found
+  //  - If no category was found, return notFound()
   console.log(category);
 
   return (
     <>
+      {/* TODO: Render the category page */}
+      {/*  - Render a PageHeading with the category name */}
+      {/*  - Check for and render defaultImage and description */}
+      {/*  - Render a <ul>, loop over products and render a ProductCard for each */}
     </>
   );
 }
