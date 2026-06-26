@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1
+
+_Based on Next.js 16.2.3_
+
+### Summary
+
+Restructured commit history to place TODO comments immediately before the code that resolves them.
+
 ## 1.0.0
 
 _Based on Next.js 16.2.3_
