@@ -18,10 +18,20 @@ export default async function CartPage() {
     cart = null;
   }
 
+  // TODO: Replace this with a check for whether the cart was found
+  //  - If no cart was found, render a simple page with a PageHeading and "no items in cart" message
   console.log(cart);
+
+  // TODO: Create a currencyFormatter w/ Intl.NumberFormat
+  //  - Set currency based on cart.currencyCode
 
   return (
     <>
+      {/* TODO: Render the cart page */}
+      {/*  - Render a PageHeading with "Cart" */}
+      {/*  - Render a table with a tbody looping over cart.lineItems (use CartItemRow for each row) */}
+      {/*  - Render a tfoot with subtotal (cart.baseAmount.value) and grand total (cart.amount.value) */}
+      {/*  - Use currencyFormatter to format the amounts */}
     </>
   );
 }
