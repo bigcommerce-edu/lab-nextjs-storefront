@@ -15,7 +15,13 @@ export interface LoginState {
  * Perform login
  */
 export const loginCustomer = async (
-
+  // TODO: Add parameters
+  //  - prevState, of type `LoginState`
+  //  - formData, of type `FormData`
+  //  - The function returns a `Promise<LoginState>`
 ) => {
+  // TODO: Get `email` and `password` from formData
+
+  // TODO: Replace this with a response object with a "not implemented" error message and the submitted email
   return Promise.resolve({});
 };
