@@ -95,13 +95,31 @@ export const getCartDetails = async ({
   };
 };
 
+// TODO: Add `createCartRedirectQuery`
+//  - This is a GraphQL mutation
+//  - It should use cart.createCartRedirectUrls
+//  - Needs a $cartId variable
+//  - Select redirectUrls.redirectedCheckoutUrl from cart
+
+// TODO: Define the `CreateCartRedirectVars` interface
+//  - This should match the expected variables for `createCartRedirectQuery`
+
+// TODO: Define the `CreateCartRedirectResp` interface
+//  - Matches the shape of `createCartRedirectQuery`
+
 /**
  * Generate a redirect URL for a cart
  */
 export const createCartRedirect = async ({
-
+  // TODO: Add cartId
 }:{
-
+  // TODO: cartId is a string
 }) => {
+  // TODO: Replace this with the actual mutation logic
+  //  - Use bcGqlFetch with the response and var types
+  //    - Pass createCartRedirectQuery as the query
+  //    - Include cartId
+  //  - Extract redirectedCheckoutUrl from the response and throw an error if it's not found
+  //  - Return the redirectedCheckoutUrl
   return Promise.resolve("");
 };

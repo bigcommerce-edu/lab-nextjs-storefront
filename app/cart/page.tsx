@@ -32,6 +32,8 @@ export default async function CartPage() {
     currency: cart?.currencyCode ?? 'USD',
   });
 
+  // TODO: Use createCartRedirect to get a redirect URL
+
   return (
     <>
       <PageHeading>Cart</PageHeading>
@@ -51,6 +53,8 @@ export default async function CartPage() {
               <th className="px-8 py-4 text-right" colSpan={2}>Grand Total</th>
               <td className="px-8 py-4 text-right">{currencyFormatter.format(cart.amount.value)}</td>
             </tr>
+            {/* TODO: Render a checkout button if a redirect URL is available */}
+            {/*   - The redirect URL can be the direct href of an HTML <a> tag */}
           </tfoot>
         </table>
       </div>
