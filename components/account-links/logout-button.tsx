@@ -6,6 +6,12 @@ import { logout } from "./_actions/logout";
 const LogoutButton = () => {
   const [loading, setLoading] = useState(false);
 
+  // TODO: Create `submitLogout` handler
+  //  - Set loading to true before the logout action
+  //  - Call logout action
+  //  - Set loading to false after the logout action completes
+
+  // TODO: Add onClick handler to the button, calling submitLogout
   return (
     <button 
       disabled={loading} 
