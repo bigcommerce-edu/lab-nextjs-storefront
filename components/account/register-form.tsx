@@ -1,40 +1,24 @@
 'use client';
 
-import { useState } from "react";
-import { registerCustomer } from "./_actions/register-customer";
+import { useActionState } from "react";
+import { registerCustomer, RegisterState } from "./_actions/register-customer";
+
+const initialState: RegisterState = {
+  error: null,
+  email: "",
+  firstName: "",
+  lastName: "",
+};
 
 const RegisterForm = () => {
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  const submitRegister = async () => {
-    setLoading(true);
-    setErrorMsg(null);
-
-    const registerResp = await registerCustomer({
-      email,
-      firstName,
-      lastName,
-      password,
-    });
-
-    setLoading(false);
-    
-    if (!registerResp.success) {
-      setErrorMsg(registerResp.error ?? "An unexpected error occurred");
-    }
-  }
+  const [state, formAction, pending] = useActionState(registerCustomer, initialState);
 
   return (
-    <form onSubmit={(e) => {e.preventDefault(); submitRegister()}}>
+    <form action={formAction}>
 
-      {errorMsg && (
+      {state.error && (
         <div className="bg-rose-400 p-2 font-bold text-sm text-center">
-          {errorMsg}
+          {state.error}
         </div>
       )}
 
@@ -42,30 +26,30 @@ const RegisterForm = () => {
         <label className="font-bold text-lg block">Email</label>
         <input className="w-full border border-neutral-300 p-2
           hover:border-neutral-700"
-          type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+          type="text" name="email" defaultValue={state.email} />
       </div>
       <div className="my-8 p-4">
         <label className="font-bold text-lg block">First Name</label>
         <input className="w-full border border-neutral-300 p-2
           hover:border-neutral-700"
-          type="text" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+          type="text" name="firstName" defaultValue={state.firstName} />
       </div>
       <div className="my-8 p-4">
         <label className="font-bold text-lg block">Last Name</label>
         <input className="w-full border border-neutral-300 p-2
           hover:border-neutral-700"
-          type="text" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+          type="text" name="lastName" defaultValue={state.lastName} />
       </div>
       <div className="my-8 p-4">
         <label className="font-bold text-lg block">Password</label>
         <input className="w-full border border-neutral-300 p-2
           hover:border-neutral-700"
-          type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          type="password" name="password" />
       </div>
       <div className="my-8 p-4 text-center">
-      <button disabled={loading} className="p-2 rounded-md text-lg w-44 cursor-pointer
+      <button disabled={pending} className="p-2 rounded-md text-lg w-44 cursor-pointer
         bg-neutral-700 text-white hover:bg-neutral-500 disabled:bg-neutral-500">
-        {loading ? (
+        {pending ? (
           <span>...</span>
         ) : (
           <span>

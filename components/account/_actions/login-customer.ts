@@ -43,19 +43,24 @@ interface LoginResp {
   }
 }
 
+export interface LoginState {
+  error: string | null;
+  email: string;
+}
+
 /**
  * Perform login
  */
-export const loginCustomer = async ({
-  email,
-  password,
-}: {
-  email: string,
-  password: string,
-}) => {
+export const loginCustomer = async (
+  prevState: LoginState,
+  formData: FormData
+): Promise<LoginState> => {
+  const email = String(formData.get("email") ?? "");
+  const password = String(formData.get("password") ?? "");
+
   const { JWT_SECRET } = process.env;
   if (!JWT_SECRET) {
-    return { success: false, error: "Could not perform login" };
+    return { error: "Could not perform login", email };
   }
 
   try {
@@ -70,7 +75,7 @@ export const loginCustomer = async ({
     const customer = customerResp.data.login.customer;
     const token = customerResp.data.login.customerAccessToken.value;
     if (!customer || !token) {
-      return { success: false, error: "Customer login failed"};
+      return { error: "Customer login failed", email };
     }
 
     const customerJwt = jwt.sign({
@@ -92,7 +97,7 @@ export const loginCustomer = async ({
     });
   } catch(err) {
     const error = (err instanceof Error) ? err.message : String(err);
-    return { success: false, error };
+    return { error, email };
   }
 
   redirect("/");

@@ -63,20 +63,27 @@ interface RegisterResp {
   }
 }
 
+export interface RegisterState {
+  error: string | null;
+  email: string;
+  firstName: string;
+  lastName: string;
+}
+
 /**
  * Register a new customer
  */
-export const registerCustomer = async ({
-  email,
-  firstName,
-  lastName,
-  password,
-}: {
-  email: string,
-  firstName: string,
-  lastName: string,
-  password: string,
-}) => {
+export const registerCustomer = async (
+  prevState: RegisterState,
+  formData: FormData
+): Promise<RegisterState> => {
+  const email = String(formData.get("email") ?? "");
+  const firstName = String(formData.get("firstName") ?? "");
+  const lastName = String(formData.get("lastName") ?? "");
+  const password = String(formData.get("password") ?? "");
+
+  const submitted = { email, firstName, lastName };
+
   try {
     const customerResp = await bcGqlFetch<RegisterResp, RegisterVars>(
       registerQuery,
@@ -95,11 +102,11 @@ export const registerCustomer = async ({
       if (errors) {
         errorMsg = errors.map(error => error.message).join("; ")
       }
-      return { success: false, error: errorMsg };
+      return { ...submitted, error: errorMsg };
     }
   } catch(err) {
     const error = (err instanceof Error) ? err.message : String(err);
-    return { success: false, error };
+    return { ...submitted, error };
   }
 
   redirect("/login");

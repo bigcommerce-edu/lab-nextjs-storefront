@@ -17,7 +17,6 @@ const MiniCart = async () => {
       cart = await getCart({ cartId });
     } catch (err) {
       cart = null;
-      cookieStore.delete(cookieName);
     }
   } else {
     cart = null;
