@@ -1,6 +1,8 @@
+import "server-only";
+
 import { headers } from "next/headers";
 
-const securePrefix = "_Secure-";
+const securePrefix = "__Secure-";
 
 export const isSecure = async () => {
   const headersList = await headers();

@@ -19,14 +19,14 @@ const Header = async () => {
     <header className="w-full p-4 border-b border-neutral-300">
       <div className="flex items-center justify-between">
         <h1>
-          <a href="/">
+          <Link href="/">
             {logoImageUrl ? (
               <Image src={logoImageUrl}
                 alt={storeName ?? ''} width={300} height={200} />
             ) : (
               <span className="font-bold text-2xl">{logoText ?? (storeName ?? '')}</span>
             )}
-          </a>
+          </Link>
         </h1>
         <div className="flex">
           <AccountLinks />

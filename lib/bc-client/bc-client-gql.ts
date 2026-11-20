@@ -1,3 +1,5 @@
+import "server-only";
+
 export async function bcGqlFetch<RespType>(query: string, customerToken?: string): Promise<RespType>;
 export async function bcGqlFetch<RespType, VarsType>(query: string, variables: VarsType, customerToken?: string): Promise<RespType>;
 export async function bcGqlFetch<RespType, VarsType>(

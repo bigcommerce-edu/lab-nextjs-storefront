@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.1.0
+
+_Based on Next.js 16.4.6_
+
+### Summary
+
+Upgraded the base framework from Next.js 16.2.3 to 16.4.6, upgraded dependencies, and upgraded lab code to current Next.js and React patterns.
+
+### Changes
+
+- Upgraded `next` to 16.4.6 and `react` / `react-dom` to 19.3.0.
+- Updated the Node.js version in `.nvmrc` from 18 to 22 (Next.js 16 requires Node.js 20.9 or later).
+- Upgraded pnpm from 8.15.9 to 11.28.12 (`packageManager`).
+- Re-installed `jsonwebtoken` (9.0.3) and `@types/jsonwebtoken` (9.0.10) at their latest versions, now pinned to exact versions.
+- The framework install is committed unaltered; a separate commit then disables the scaffold's default `cacheComponents` and `partialPrefetching` options in `next.config.ts`, keeping all routes dynamically rendered as before (the lab code is not structured for Cache Components).
+- Moved the Next.js-generated agent rules into `AGENTS-Next.md`. 
+- Removed cookie deletions from Server Component rendering in `getCurrentCustomer()` and the mini-cart. Next.js only allows modifying cookies in Server Actions or Route Handlers.
+- Login, registration, logout, and Add to Cart now invoke their Server Actions through `<form action>` with React's `useActionState`, replacing click/submit handlers with manual loading state.
+- Category and product pages use the generated `PageProps` route types instead of hand-written prop types.
+- The header logo link uses `<Link>` for client-side navigation instead of a plain `<a>`.
+- Marked the BigCommerce GraphQL client, cookie helpers, and `getCurrentCustomer()` as `server-only` so they cannot be bundled into client code.
+- Fixed the secure cookie name prefix from `_Secure-` to `__Secure-`, so browsers enforce the prefix's requirements.
+
 ## 1.0.1
 
 _Based on Next.js 16.2.3_

@@ -1,5 +1,7 @@
 # Next.js Storefront Example Lab Project
 
+> **Next.js agent rules:** Read [AGENTS-Next.md](AGENTS-Next.md) for Next.js-specific instructions before writing any code.
+
 This is an example developer project demonstrating how to build a basic Next.js storefront for a BigCommerce store.
 
 ## Terminology and Git Model

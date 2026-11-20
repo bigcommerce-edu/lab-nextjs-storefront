@@ -11,17 +11,14 @@ import { getCurrentCustomer } from "@/lib/getCurrentCustomer";
 export default async function CategoryPage({
   params,
   searchParams,
-}: {
-  params: Promise<{ catPath: string[] }>,
-  searchParams?: Promise<{ before?: string, after?: string }>,
-}) {
+}: PageProps<"/category/[...catPath]">) {
   const { catPath } = await params;
   const path = `/${catPath.join('/')}`;
 
   const mainImgSize = 500;
   const thumbnailSize = 500;
 
-  const { before, after } = await searchParams ?? {};
+  const { before, after } = await searchParams;
 
   const currentCustomer = await getCurrentCustomer();
 

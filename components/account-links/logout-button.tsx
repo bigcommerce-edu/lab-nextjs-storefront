@@ -1,29 +1,24 @@
 'use client';
 
-import { useState } from "react";
+import { useActionState } from "react";
 import { logout } from "./_actions/logout";
 
 const LogoutButton = () => {
-  const [loading, setLoading] = useState(false);
-
-  const submitLogout = async () => {
-    setLoading(true);
-    await logout();
-    setLoading(false);
-  }
+  const [, formAction, pending] = useActionState(logout, undefined);
 
   return (
-    <button 
-      disabled={loading} 
-      className="mx-4 font-bold cursor-pointer hover:underline"
-      onClick={submitLogout}
-    >
-      {loading ? (
-        <span>...</span>
-      ) : (
-        <span>Log out</span>
-      )}
-    </button>
+    <form action={formAction}>
+      <button
+        disabled={pending}
+        className="mx-4 font-bold cursor-pointer hover:underline"
+      >
+        {pending ? (
+          <span>...</span>
+        ) : (
+          <span>Log out</span>
+        )}
+      </button>
+    </form>
   );
 }
 

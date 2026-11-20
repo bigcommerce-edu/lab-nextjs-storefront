@@ -18,11 +18,7 @@ export const metadata: Metadata = {
   title: "BigCommerce Example Store",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en">
       <body

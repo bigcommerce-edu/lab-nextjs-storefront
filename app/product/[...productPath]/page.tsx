@@ -7,9 +7,7 @@ import { getCurrentCustomer } from '@/lib/getCurrentCustomer';
 
 export default async function ProductPage({
   params,
-}: {
-  params: Promise<{ productPath: string[] }>,
-}) {
+}: PageProps<"/product/[...productPath]">) {
   const { productPath } = await params;
   const path = `/${productPath.join('/')}`;
 

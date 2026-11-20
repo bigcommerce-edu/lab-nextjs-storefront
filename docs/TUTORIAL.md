@@ -1,6 +1,6 @@
 # Lab Tutorial: Next.js Storefront
 
-> **Based on version 1.0.1** — this tutorial corresponds to the latest progressive history tagged `1.0.1`.
+> **Based on version 1.1.0** — this tutorial corresponds to the latest progressive history tagged `1.1.0`.
 
 This document lists the lab exercises and their step-by-step diffs. Each step links to a GitHub comparison between the step's `*-pre` (TODO placeholders) and `*-post` (implemented) tags.
 
